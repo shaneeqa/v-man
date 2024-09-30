@@ -1,4 +1,4 @@
-package com.aneeq.venuemanager.dto.mapper;
+package com.aneeq.venuemanager.dto.mapper.request;
 
 import com.aneeq.venuemanager.MockVenueRequest;
 import com.aneeq.venuemanager.dto.model.request.VenueRequest;
@@ -10,10 +10,10 @@ import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class VenueMapperTests {
+class VenueRequestMapperTests {
 
     @InjectMocks
-    VenueMapperImpl venueMapper;
+    VenueRequestMapperImpl venueRequestMapper;
 
     @BeforeEach
     void setup(){
@@ -22,7 +22,8 @@ class VenueMapperTests {
     @Test
     void testVenueRequestToVenue(){
         VenueRequest venueRequest = MockVenueRequest.generateVenueRequest();
-        Venue venue = venueMapper.venueRequestToVenue(venueRequest);
+        Venue venue = venueRequestMapper.venueRequestToVenue(venueRequest);
         assertEquals(venue.getName(),venueRequest.getName());
     }
+
 }

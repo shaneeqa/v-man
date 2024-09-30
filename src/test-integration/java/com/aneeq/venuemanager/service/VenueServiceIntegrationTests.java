@@ -1,7 +1,9 @@
 package com.aneeq.venuemanager.service;
 
+import com.aneeq.venuemanager.MockVenue;
 import com.aneeq.venuemanager.MockVenueRequest;
 import com.aneeq.venuemanager.dto.model.request.VenueRequest;
+import com.aneeq.venuemanager.dto.model.response.VenueResponse;
 import com.aneeq.venuemanager.entity.Venue;
 import com.aneeq.venuemanager.repository.VenueRepository;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,13 @@ class VenueServiceIntegrationTests {
         assertVenueObject(venues.get(0),venueRequest);
     }
 
+    @Test
+    void testGetAllVenues(){
+        venueRepository.saveAll(MockVenue.generateVenueList(3));
+        List<VenueResponse> allVenues = venueService.getAllVenues();
+
+        assertEquals(3,allVenues.size());
+    }
 
     private void assertVenueObject(Venue venue, VenueRequest venueRequest){
         assertEquals(venue.getName(), venueRequest.getName());

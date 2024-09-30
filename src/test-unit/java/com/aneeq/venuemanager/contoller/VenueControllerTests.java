@@ -1,8 +1,12 @@
 package com.aneeq.venuemanager.contoller;
 
+import com.aneeq.venuemanager.MockVenue;
 import com.aneeq.venuemanager.MockVenueRequest;
+import com.aneeq.venuemanager.MockVenueResponse;
 import com.aneeq.venuemanager.controller.VenueController;
 import com.aneeq.venuemanager.dto.model.request.VenueRequest;
+import com.aneeq.venuemanager.dto.model.response.VenueResponse;
+import com.aneeq.venuemanager.entity.Venue;
 import com.aneeq.venuemanager.service.VenueService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +16,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class VenueControllerTests {
 
@@ -34,5 +41,15 @@ class VenueControllerTests {
 
         verify(venueService).saveVenue(venueRequest);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    void testViewAllVenues(){
+        List<VenueResponse> venueResponses = MockVenueResponse.generateVenueResponseList(2);
+        when(venueService.getAllVenues()).thenReturn(venueResponses);
+        ResponseEntity<List<VenueResponse>> venueResponseList = venueController.viewAllVenues();
+
+        assertEquals(HttpStatus.OK, venueResponseList.getStatusCode());
+        assertEquals(venueResponses,venueResponseList.getBody());
     }
 }

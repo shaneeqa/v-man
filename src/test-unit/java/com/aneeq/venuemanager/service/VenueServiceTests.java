@@ -7,6 +7,7 @@ import com.aneeq.venuemanager.dto.mapper.response.VenueResponseMapperImpl;
 import com.aneeq.venuemanager.dto.model.request.VenueRequest;
 import com.aneeq.venuemanager.dto.model.response.VenueResponse;
 import com.aneeq.venuemanager.entity.Venue;
+import com.aneeq.venuemanager.exception.VenueNotFoundException;
 import com.aneeq.venuemanager.repository.VenueRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class VenueServiceTests {
@@ -35,7 +37,7 @@ class VenueServiceTests {
     VenueResponseMapperImpl venueResponseMapper;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -48,7 +50,7 @@ class VenueServiceTests {
     }
 
     @Test
-    void testGetAllVenues(){
+    void testGetAllVenues() {
         List<Venue> venues = MockVenue.generateVenueList(2);
         when(venueRepository.findAll()).thenReturn(venues);
 
@@ -57,12 +59,24 @@ class VenueServiceTests {
         verify(venueRepository, times(1)).findAll();
         assertEquals(2, venueResponses.size());
 
-        for(int i=0;i<venueResponses.size();i++){
-            assertVenueObject(venueResponses.get(i),venues.get(i));
+        for (int i = 0; i < venueResponses.size(); i++) {
+            assertVenueObject(venueResponses.get(i), venues.get(i));
         }
     }
 
-    private void assertVenueObject(VenueResponse venueResponse, Venue venue){
+    @Test
+    void testGetVenueById() throws VenueNotFoundException {
+        Venue venue = MockVenue.generateVenue();
+        when(venueRepository.findById(anyInt())).thenReturn(Optional.of(venue));
+
+        VenueResponse venueResponse = venueService.getVenueById(1);
+        verify(venueRepository, times(1)).findById(1);
+        verify(venueResponseMapper, times(1)).venueToVenueResponse(venue);
+        assertNotNull(venueResponse);
+        assertVenueObject(venueResponse, venue);
+    }
+
+    private void assertVenueObject(VenueResponse venueResponse, Venue venue) {
         assertEquals(venueResponse.getId(), venue.getId());
         assertEquals(venueResponse.getName(), venue.getName());
         assertEquals(venueResponse.getLocation(), venue.getLocation());

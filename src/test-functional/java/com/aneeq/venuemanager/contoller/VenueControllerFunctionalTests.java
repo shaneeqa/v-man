@@ -1,8 +1,10 @@
 package com.aneeq.venuemanager.contoller;
 
+import com.aneeq.venuemanager.MockVenue;
 import com.aneeq.venuemanager.MockVenueRequest;
 import com.aneeq.venuemanager.dto.model.request.VenueRequest;
 import com.aneeq.venuemanager.dto.model.response.VenueResponse;
+import com.aneeq.venuemanager.entity.Venue;
 import com.aneeq.venuemanager.repository.VenueRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,14 @@ class VenueControllerFunctionalTests {
 
     @Test
     void testViewAllVenues(){
-        ResponseEntity<VenueResponse[]> forEntity = testRestTemplate.getForEntity("/venues", VenueResponse[].class);
-        assertEquals(HttpStatus.OK, forEntity.getStatusCode());
+        ResponseEntity<VenueResponse[]> venues = testRestTemplate.getForEntity("/venues", VenueResponse[].class);
+        assertEquals(HttpStatus.OK, venues.getStatusCode());
+    }
+
+    @Test
+    void testViewVenueById(){
+        Venue venue = venueRepository.save(MockVenue.generateVenue());
+        ResponseEntity<VenueResponse> venueResponse = testRestTemplate.getForEntity("/venues/{id}", VenueResponse.class, venue.getId());
+        assertEquals(HttpStatus.OK, venueResponse.getStatusCode());
     }
 }

@@ -2,6 +2,7 @@ package com.aneeq.venuemanager.controller;
 
 import com.aneeq.venuemanager.dto.model.request.VenueRequest;
 import com.aneeq.venuemanager.dto.model.response.VenueResponse;
+import com.aneeq.venuemanager.exception.VenueNotFoundException;
 import com.aneeq.venuemanager.service.VenueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,25 @@ public class VenueController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VenueResponse>> viewAllVenues(){
+    public ResponseEntity<List<VenueResponse>> viewAllVenues() {
         venueService.getAllVenues();
         return new ResponseEntity<>(venueService.getAllVenues(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<VenueResponse> viewVenueById(@PathVariable Integer id) {
+        try {
+            return new ResponseEntity<>(venueService.getVenueById(id), HttpStatus.OK);
+        } catch (VenueNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        /**
+         * the following is for catching other unidentified exceptions
+         */
+        catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

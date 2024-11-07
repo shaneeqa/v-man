@@ -1,10 +1,12 @@
 package com.aneeq.venuemanager.contoller;
 
+import com.aneeq.venuemanager.MockVenue;
 import com.aneeq.venuemanager.MockVenueRequest;
 import com.aneeq.venuemanager.MockVenueResponse;
 import com.aneeq.venuemanager.controller.VenueController;
 import com.aneeq.venuemanager.dto.model.request.VenueRequest;
 import com.aneeq.venuemanager.dto.model.response.VenueResponse;
+import com.aneeq.venuemanager.entity.Venue;
 import com.aneeq.venuemanager.exception.VenueNotFoundException;
 import com.aneeq.venuemanager.service.VenueService;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,6 +96,15 @@ class VenueControllerTests {
         ResponseEntity<List<VenueResponse>> response = venueController.viewVenueByName("S");
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testUpdateVenueById() throws VenueNotFoundException {
+        VenueRequest venueRequest = MockVenueRequest.generateVenueRequest();
+        ResponseEntity<VenueResponse> response = venueController.updateVenueById(anyInt(), venueRequest);
+
+        verify(venueService).updateVenueById(anyInt(),venueRequest);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }
 

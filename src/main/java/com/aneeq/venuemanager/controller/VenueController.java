@@ -43,8 +43,7 @@ public class VenueController {
         }
         /**
          * the following is for catching other unidentified exceptions
-         */
-        catch (Exception ex) {
+         */ catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,5 +55,12 @@ public class VenueController {
         } catch (VenueNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VenueResponse> updateVenueById(@PathVariable Integer id, @RequestBody VenueRequest venueRequest)
+            throws VenueNotFoundException {
+        venueService.updateVenueById(id, venueRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

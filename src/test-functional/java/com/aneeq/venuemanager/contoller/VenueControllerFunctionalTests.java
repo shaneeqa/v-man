@@ -13,6 +13,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,5 +44,13 @@ class VenueControllerFunctionalTests {
         Venue venue = venueRepository.save(MockVenue.generateVenue());
         ResponseEntity<VenueResponse> venueResponse = testRestTemplate.getForEntity("/venues/{id}", VenueResponse.class, venue.getId());
         assertEquals(HttpStatus.OK, venueResponse.getStatusCode());
+    }
+
+    @Test
+    void testViewByName(){
+        String searchString = "audit";
+        List<Venue> venues = venueRepository.saveAll(MockVenue.generateAuditoriumList(2));
+        ResponseEntity<VenueResponse[]> venueResponses = testRestTemplate.getForEntity("/venues/search?name=" + searchString, VenueResponse[].class);
+        assertEquals(HttpStatus.OK, venueResponses.getStatusCode());
     }
 }

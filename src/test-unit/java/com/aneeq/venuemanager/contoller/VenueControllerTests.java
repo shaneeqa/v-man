@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,6 +76,24 @@ class VenueControllerTests {
         when(venueService.getVenueById(anyInt())).thenThrow(NullPointerException.class);
         ResponseEntity<VenueResponse> response = venueController.viewVenueById(1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    void testViewByName() throws VenueNotFoundException {
+        List<VenueResponse> venueResponses = MockVenueResponse.generateVenueResponseList(3);
+        when(venueService.getVenueByName(anyString())).thenReturn(venueResponses);
+        ResponseEntity<List<VenueResponse>> listResponseEntity = venueController.viewVenueByName(anyString());
+
+        assertEquals(HttpStatus.OK, listResponseEntity.getStatusCode());
+        assertEquals(venueResponses,listResponseEntity.getBody());
+    }
+
+    @Test
+    void testViewByName_VenueNotFoundException() throws VenueNotFoundException {
+        when(venueService.getVenueByName(anyString())).thenThrow(VenueNotFoundException.class);
+        ResponseEntity<List<VenueResponse>> response = venueController.viewVenueByName("S");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
 

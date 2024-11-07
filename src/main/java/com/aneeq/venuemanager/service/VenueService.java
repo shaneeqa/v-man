@@ -51,4 +51,13 @@ public class VenueService {
 
         return venueResponseMapper.venueToVenueResponse(venue.get());
     }
+
+    public List<VenueResponse> getVenueByName(String name) throws VenueNotFoundException {
+        List<Venue> venueList = venueRepository.findByNameIgnoreCaseContaining(name);
+
+        if(venueList.isEmpty())
+            throw new VenueNotFoundException();
+
+        return venueResponseMapper.venuesToVenueResponses(venueList);
+    }
 }

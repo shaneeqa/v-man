@@ -26,4 +26,23 @@ public class MockVenue {
         }
         return venueArrayList;
     }
+
+    /**
+     *  to generate list of venues with the name 'auditorium'
+     * @param num
+     * @return list of auditoriums
+     */
+    public static List<Venue> generateAuditoriumList(int num){
+        ArrayList<Venue> auditoriums = new ArrayList<>();
+
+        for (int o=0; o<num; o++){
+            Venue venue = new Venue();
+
+            venue.setId(FAKER.random().nextInt(1, 100000));
+            venue.setName(FAKER.ancient().titan() + "Auditorium");
+            venue.setLocation(FAKER.address().city());
+            auditoriums.add(venue);
+        }
+        return  auditoriums;
+    }
 }

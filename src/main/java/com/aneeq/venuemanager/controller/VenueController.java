@@ -41,13 +41,20 @@ public class VenueController {
         } catch (VenueNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         /**
          * the following is for catching other unidentified exceptions
          */
         catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<VenueResponse>> viewVenueByName(@RequestParam String name) {
+        try {
+            return new ResponseEntity<>(venueService.getVenueByName(name), HttpStatus.OK);
+        } catch (VenueNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

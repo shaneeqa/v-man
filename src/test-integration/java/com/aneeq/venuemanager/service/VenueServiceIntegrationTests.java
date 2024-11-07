@@ -14,8 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class VenueServiceIntegrationTests {
@@ -61,6 +60,18 @@ class VenueServiceIntegrationTests {
         assertVenueResponseObject(venue, venueById);
     }
 
+    @Test
+    void testGetVenueByName() throws VenueNotFoundException {
+        List<Venue> venues = venueRepository.saveAll(MockVenue.generateAuditoriumList(3));
+        String searchKeyword = "audit";
+        List<VenueResponse> venueByName = venueService.getVenueByName(searchKeyword);
+
+        assertFalse(venueByName.isEmpty());
+        assertTrue(venueByName.size() > 1);
+        for(VenueResponse venueResponse:venueByName){
+            assertTrue(venueResponse.getName().toLowerCase().contains(searchKeyword));
+        }
+    }
 
     private void assertVenueRequestObject(Venue venue, VenueRequest venueRequest) {
         assertEquals(venue.getName(), venueRequest.getName());

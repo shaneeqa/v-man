@@ -70,12 +70,28 @@ class VenueServiceTests {
         when(venueRepository.findById(anyInt())).thenReturn(Optional.of(venue));
 
         VenueResponse venueResponse = venueService.getVenueById(1);
+
         verify(venueRepository, times(1)).findById(1);
         verify(venueResponseMapper, times(1)).venueToVenueResponse(venue);
         assertNotNull(venueResponse);
         assertVenueObject(venueResponse, venue);
     }
 
+
+    @Test
+    void testGetVenueByName() throws VenueNotFoundException {
+        List<Venue> venues = MockVenue.generateVenueList(3);
+        when(venueRepository.findByNameIgnoreCaseContaining(anyString())).thenReturn(venues);
+
+        List<VenueResponse> venueResponses = venueService.getVenueByName(anyString());
+
+        verify(venueRepository,times(1)).findByNameIgnoreCaseContaining(anyString());
+        verify(venueResponseMapper,times(1)).venuesToVenueResponses(venues);
+
+        for (int i = 0; i < venueResponses.size(); i++) {
+            assertVenueObject(venueResponses.get(i), venues.get(i));
+        }
+    }
     private void assertVenueObject(VenueResponse venueResponse, Venue venue) {
         assertEquals(venueResponse.getId(), venue.getId());
         assertEquals(venueResponse.getName(), venue.getName());

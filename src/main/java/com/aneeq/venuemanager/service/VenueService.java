@@ -31,7 +31,7 @@ public class VenueService {
     }
 
     @Autowired
-    public void setVenueResponseMapper(VenueResponseMapper venueResponseMapper){
+    public void setVenueResponseMapper(VenueResponseMapper venueResponseMapper) {
         this.venueResponseMapper = venueResponseMapper;
     }
 
@@ -46,7 +46,7 @@ public class VenueService {
     public VenueResponse getVenueById(Integer id) throws VenueNotFoundException {
         Optional<Venue> venue = venueRepository.findById(id);
 
-        if(venue.isEmpty())
+        if (venue.isEmpty())
             throw new VenueNotFoundException();
 
         return venueResponseMapper.venueToVenueResponse(venue.get());
@@ -55,7 +55,7 @@ public class VenueService {
     public List<VenueResponse> getVenueByName(String name) throws VenueNotFoundException {
         List<Venue> venueList = venueRepository.findByNameIgnoreCaseContaining(name);
 
-        if(venueList.isEmpty())
+        if (venueList.isEmpty())
             throw new VenueNotFoundException();
 
         return venueResponseMapper.venuesToVenueResponses(venueList);
@@ -66,5 +66,15 @@ public class VenueService {
         if(venue.isEmpty())
             throw new VenueNotFoundException();
         venueRepository.deleteById(id);
+    }
+
+    public void updateVenueById(Integer id, VenueRequest venueRequest) throws VenueNotFoundException {
+        Optional<Venue> venue = venueRepository.findById(id);
+
+        if (venue.isEmpty())
+            throw new VenueNotFoundException();
+
+        venueRequestMapper.venueRequestToVenue(venue.get(), venueRequest);
+        venueRepository.save(venue.get());
     }
 }

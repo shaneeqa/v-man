@@ -67,6 +67,19 @@ class VenueControllerFunctionalTests {
                 venue.getId()
         );
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
 
+    @Test
+    void testUpdateVenueById(){
+        Venue venue = venueRepository.save(MockVenue.generateVenue());
+        ResponseEntity<VenueResponse> response = testRestTemplate.exchange(
+                "/venues/{id}",
+                HttpMethod.PUT,
+                new HttpEntity<>(venue),
+                VenueResponse.class,
+                venue.getId()
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

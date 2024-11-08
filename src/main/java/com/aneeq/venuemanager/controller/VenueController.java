@@ -62,4 +62,11 @@ public class VenueController {
         venueService.deleteVenueById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VenueResponse> updateVenueById(@PathVariable Integer id, @RequestBody VenueRequest venueRequest)
+            throws VenueNotFoundException {
+        venueService.updateVenueById(id, venueRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

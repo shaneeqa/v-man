@@ -84,6 +84,17 @@ class VenueServiceIntegrationTests {
         assertFalse(venueRepository.existsById(venue.getId()));
     }
 
+    @Test
+    void testUpdateVenueById() throws VenueNotFoundException {
+        VenueRequest venueRequest = MockVenueRequest.generateVenueRequest();
+        Venue venue = venueRepository.save(MockVenue.generateVenue());
+        venueService.updateVenueById(venue.getId(),venueRequest);
+
+        Optional<Venue> updatedVenue = venueRepository.findById(venue.getId());
+        assertVenueRequestObject(updatedVenue.get(),venueRequest);
+
+    }
+
     private void assertVenueRequestObject(Venue venue, VenueRequest venueRequest) {
         assertEquals(venue.getName(), venueRequest.getName());
         assertEquals(venue.getLocation(), venueRequest.getLocation());

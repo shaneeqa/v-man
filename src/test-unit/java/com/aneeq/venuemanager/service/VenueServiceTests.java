@@ -123,6 +123,27 @@ class VenueServiceTests {
         assertEquals(Util.VENUE_NOT_FOUND_EXCEPTION_MSG, venueNotFoundException.getMessage());
     }
 
+
+    @Test
+    void testUpdateVenueById() throws VenueNotFoundException {
+        Venue venue = new Venue();
+        when(venueRepository.findById(2)).thenReturn(Optional.of(venue));
+        venueService.updateVenueById(2, MockVenueRequest.generateVenueRequest());
+
+        verify(venueRepository, times(1)).save(venue);
+    }
+
+    @Test
+    void testUpdateVenueById_VenueNotFoundException() {
+        when(venueRepository.findById(2)).thenReturn(Optional.empty());
+        VenueNotFoundException venueNotFoundException = assertThrows(VenueNotFoundException.class,
+                () -> venueService.updateVenueById(2, MockVenueRequest.generateVenueRequest()));
+
+        verify(venueRepository, times(1)).findById(2);
+        verify(venueRepository, never()).save(any());
+        assertEquals(Util.VENUE_NOT_FOUND_EXCEPTION_MSG, venueNotFoundException.getMessage());
+    }
+
     private void assertVenueObject(VenueResponse venueResponse, Venue venue) {
         assertEquals(venueResponse.getId(), venue.getId());
         assertEquals(venueResponse.getName(), venue.getName());

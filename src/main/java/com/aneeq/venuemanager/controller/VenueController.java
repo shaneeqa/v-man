@@ -43,8 +43,7 @@ public class VenueController {
         }
         /**
          * the following is for catching other unidentified exceptions
-         */
-        catch (Exception ex) {
+         */ catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,5 +55,11 @@ public class VenueController {
         } catch (VenueNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<VenueResponse> deleteVenueById(@PathVariable Integer id) throws VenueNotFoundException {
+        venueService.deleteVenueById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

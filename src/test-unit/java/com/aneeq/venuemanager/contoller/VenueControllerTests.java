@@ -20,8 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class VenueControllerTests {
 
@@ -94,6 +93,13 @@ class VenueControllerTests {
         ResponseEntity<List<VenueResponse>> response = venueController.viewVenueByName("S");
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testDeleteById() throws VenueNotFoundException {
+        ResponseEntity<VenueResponse> response = venueController.deleteVenueById(2);
+        verify(venueService, times(1)).deleteVenueById(2);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 }
 

@@ -60,4 +60,11 @@ public class VenueService {
 
         return venueResponseMapper.venuesToVenueResponses(venueList);
     }
+
+    public void deleteVenueById(Integer id) throws VenueNotFoundException {
+        Optional<Venue> venue = venueRepository.findById(id);
+        if(venue.isEmpty())
+            throw new VenueNotFoundException();
+        venueRepository.deleteById(id);
+    }
 }

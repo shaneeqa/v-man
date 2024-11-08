@@ -9,12 +9,15 @@ import com.aneeq.venuemanager.dto.model.response.VenueResponse;
 import com.aneeq.venuemanager.entity.Venue;
 import com.aneeq.venuemanager.exception.VenueNotFoundException;
 import com.aneeq.venuemanager.repository.VenueRepository;
+import com.aneeq.venuemanager.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,13 +88,41 @@ class VenueServiceTests {
 
         List<VenueResponse> venueResponses = venueService.getVenueByName(anyString());
 
-        verify(venueRepository,times(1)).findByNameIgnoreCaseContaining(anyString());
-        verify(venueResponseMapper,times(1)).venuesToVenueResponses(venues);
+        verify(venueRepository, times(1)).findByNameIgnoreCaseContaining(anyString());
+        verify(venueResponseMapper, times(1)).venuesToVenueResponses(venues);
 
         for (int i = 0; i < venueResponses.size(); i++) {
             assertVenueObject(venueResponses.get(i), venues.get(i));
         }
     }
+
+    @Test
+    void testDeleteVenueById() throws VenueNotFoundException {
+        //assume
+        Venue venue = new Venue();
+        when(venueRepository.findById(2)).thenReturn(Optional.of(venue));
+        doNothing().when(venueRepository).deleteById(2);
+        //act
+        venueService.deleteVenueById(2);
+        //assert
+        verify(venueRepository, times(1)).findById(2);
+        verify(venueRepository, times(1)).deleteById(2);
+    }
+
+    @Test
+    void testDeleteById_VenueNotFoundException() throws VenueNotFoundException {
+        //assume
+        when(venueRepository.findById(2)).thenReturn(Optional.empty());
+
+        //act
+        VenueNotFoundException venueNotFoundException = assertThrows(VenueNotFoundException.class, () -> venueService.deleteVenueById(2));
+
+        //assert
+        verify(venueRepository, times(1)).findById(2);
+        verify(venueRepository, never()).deleteById(2);
+        assertEquals(Util.VENUE_NOT_FOUND_EXCEPTION_MSG, venueNotFoundException.getMessage());
+    }
+
     private void assertVenueObject(VenueResponse venueResponse, Venue venue) {
         assertEquals(venueResponse.getId(), venue.getId());
         assertEquals(venueResponse.getName(), venue.getName());

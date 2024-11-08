@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -34,23 +36,37 @@ class VenueControllerFunctionalTests {
     }
 
     @Test
-    void testViewAllVenues(){
+    void testViewAllVenues() {
         ResponseEntity<VenueResponse[]> venues = testRestTemplate.getForEntity("/venues", VenueResponse[].class);
         assertEquals(HttpStatus.OK, venues.getStatusCode());
     }
 
     @Test
-    void testViewVenueById(){
+    void testViewVenueById() {
         Venue venue = venueRepository.save(MockVenue.generateVenue());
         ResponseEntity<VenueResponse> venueResponse = testRestTemplate.getForEntity("/venues/{id}", VenueResponse.class, venue.getId());
         assertEquals(HttpStatus.OK, venueResponse.getStatusCode());
     }
 
     @Test
-    void testViewByName(){
+    void testViewVenueByName() {
         String searchString = "audit";
         List<Venue> venues = venueRepository.saveAll(MockVenue.generateAuditoriumList(2));
         ResponseEntity<VenueResponse[]> venueResponses = testRestTemplate.getForEntity("/venues/search?name=" + searchString, VenueResponse[].class);
         assertEquals(HttpStatus.OK, venueResponses.getStatusCode());
+    }
+
+    @Test
+    void testDeleteVenueById() {
+        Venue venue = venueRepository.save(MockVenue.generateVenue());
+        ResponseEntity<VenueResponse> response = testRestTemplate.exchange(
+                "/venues/{id}",
+                HttpMethod.DELETE,
+                new HttpEntity<>(venue),
+                VenueResponse.class,
+                venue.getId()
+        );
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
     }
 }

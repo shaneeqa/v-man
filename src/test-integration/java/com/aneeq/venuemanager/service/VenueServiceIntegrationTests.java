@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,9 +69,19 @@ class VenueServiceIntegrationTests {
 
         assertFalse(venueByName.isEmpty());
         assertTrue(venueByName.size() > 1);
-        for(VenueResponse venueResponse:venueByName){
+        for (VenueResponse venueResponse : venueByName) {
             assertTrue(venueResponse.getName().toLowerCase().contains(searchKeyword));
         }
+    }
+
+    @Test
+    void testDeleteVenueById() throws VenueNotFoundException {
+        //assume
+        Venue venue = venueRepository.save(MockVenue.generateVenue());
+        //act
+        venueService.deleteVenueById(venue.getId());
+        //assert
+        assertFalse(venueRepository.existsById(venue.getId()));
     }
 
     private void assertVenueRequestObject(Venue venue, VenueRequest venueRequest) {

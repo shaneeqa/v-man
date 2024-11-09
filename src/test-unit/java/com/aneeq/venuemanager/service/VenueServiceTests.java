@@ -19,6 +19,7 @@ import org.mockito.Spy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +69,12 @@ class VenueServiceTests {
     }
 
     @Test
+    void testGetAllVenues_IsEmpty(){
+        when(venueRepository.findAll()).thenReturn(Collections.emptyList());
+        assertTrue(venueService.getAllVenues().isEmpty());
+    }
+
+    @Test
     void testGetVenueById() throws VenueNotFoundException {
         Venue venue = MockVenue.generateVenue();
         when(venueRepository.findById(anyInt())).thenReturn(Optional.of(venue));
@@ -80,6 +87,13 @@ class VenueServiceTests {
         assertVenueObject(venueResponse, venue);
     }
 
+    @Test
+    void testGetVenueById_VenueNotFound() {
+        when(venueRepository.findById(anyInt())).thenReturn(Optional.empty());
+        VenueNotFoundException venueNotFoundException = assertThrows(VenueNotFoundException.class,
+                () -> venueService.getVenueById(1));
+        assertEquals(Util.VENUE_NOT_FOUND_EXCEPTION_MSG, venueNotFoundException.getMessage());
+    }
 
     @Test
     void testGetVenueByName() throws VenueNotFoundException {
@@ -97,6 +111,13 @@ class VenueServiceTests {
     }
 
     @Test
+    void testGetVenueByName_VenueNotFound() {
+        when(venueRepository.findByNameIgnoreCaseContaining(anyString())).thenReturn(Collections.emptyList());
+        VenueNotFoundException venueNotFoundException = assertThrows(VenueNotFoundException.class, () -> venueService.getVenueByName("SS"));
+        assertEquals(Util.VENUE_NOT_FOUND_EXCEPTION_MSG, venueNotFoundException.getMessage());
+    }
+
+    @Test
     void testDeleteVenueById() throws VenueNotFoundException {
         //assume
         Venue venue = new Venue();
@@ -110,7 +131,7 @@ class VenueServiceTests {
     }
 
     @Test
-    void testDeleteById_VenueNotFoundException() throws VenueNotFoundException {
+    void testDeleteById_VenueNotFound() {
         //assume
         when(venueRepository.findById(2)).thenReturn(Optional.empty());
 
@@ -134,7 +155,7 @@ class VenueServiceTests {
     }
 
     @Test
-    void testUpdateVenueById_VenueNotFoundException() {
+    void testUpdateVenueById_VenueNotFound() {
         when(venueRepository.findById(2)).thenReturn(Optional.empty());
         VenueNotFoundException venueNotFoundException = assertThrows(VenueNotFoundException.class,
                 () -> venueService.updateVenueById(2, MockVenueRequest.generateVenueRequest()));

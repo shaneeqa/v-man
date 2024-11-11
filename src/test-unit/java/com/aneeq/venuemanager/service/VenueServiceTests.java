@@ -16,8 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +67,7 @@ class VenueServiceTests {
     }
 
     @Test
-    void testGetAllVenues_IsEmpty(){
+    void testGetAllVenues_isEmpty(){
         when(venueRepository.findAll()).thenReturn(Collections.emptyList());
         assertTrue(venueService.getAllVenues().isEmpty());
     }

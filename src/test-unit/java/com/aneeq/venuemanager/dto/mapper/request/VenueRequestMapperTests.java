@@ -19,6 +19,7 @@ class VenueRequestMapperTests {
     void setup(){
         MockitoAnnotations.openMocks(this);
     }
+
     @Test
     void testVenueRequestToVenue(){
         VenueRequest venueRequest = MockVenueRequest.generateVenueRequest();

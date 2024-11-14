@@ -29,7 +29,7 @@ public class VenueController {
         this.venueService = venueService;
     }
 
-    @Operation(summary = "Create a venue", description = "Creating a new venue date in database")
+    @Operation(summary = "Create a venue", description = "Creating a new venue data in database")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Venue created successfully", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid Request", content = @Content)

@@ -37,8 +37,8 @@ class VenueControllerFunctionalTests {
 
     @Test
     void testViewAllVenues() {
-        ResponseEntity<VenueResponse[]> venues = testRestTemplate.getForEntity("/venues", VenueResponse[].class);
-        assertEquals(HttpStatus.OK, venues.getStatusCode());
+        ResponseEntity<VenueResponse[]> venueResponses = testRestTemplate.getForEntity("/venues", VenueResponse[].class);
+        assertEquals(HttpStatus.OK, venueResponses.getStatusCode());
     }
 
     @Test
@@ -51,7 +51,7 @@ class VenueControllerFunctionalTests {
     @Test
     void testViewVenueByName() {
         String searchString = "audit";
-        List<Venue> venues = venueRepository.saveAll(MockVenue.generateAuditoriumList(2));
+        venueRepository.saveAll(MockVenue.generateAuditoriumList(2));
         ResponseEntity<VenueResponse[]> venueResponses = testRestTemplate.getForEntity("/venues/search?name=" + searchString, VenueResponse[].class);
         assertEquals(HttpStatus.OK, venueResponses.getStatusCode());
     }

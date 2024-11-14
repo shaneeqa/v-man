@@ -21,6 +21,7 @@ class VenueResponseMapperTests {
     void setup(){
         MockitoAnnotations.openMocks(this);
     }
+
     @Test
     void testVenuesToVenueResponses(){
         List<Venue> venues = MockVenue.generateVenueList(5);

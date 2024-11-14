@@ -24,6 +24,7 @@ public class MockVenue {
         for (int i = 0; i < num; i++) {
             venueArrayList.add(generateVenue());
         }
+
         return venueArrayList;
     }
 

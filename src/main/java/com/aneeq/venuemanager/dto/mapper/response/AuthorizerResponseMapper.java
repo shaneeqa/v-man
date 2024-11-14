@@ -10,4 +10,5 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public abstract class AuthorizerResponseMapper {
     public abstract List<AuthorizerResponse> authorizersToAuthorizerResponses(List<Authorizer> authorizer);
+    public abstract AuthorizerResponse authorizerToAuthorizerResponse(Authorizer authorizer);
 }

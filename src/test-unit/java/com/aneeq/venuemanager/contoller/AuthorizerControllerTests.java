@@ -1,10 +1,12 @@
 package com.aneeq.venuemanager.contoller;
 
+import com.aneeq.venuemanager.MockAuthorizer;
 import com.aneeq.venuemanager.MockAuthorizerRequest;
 import com.aneeq.venuemanager.MockAuthorizerResponse;
 import com.aneeq.venuemanager.controller.AuthorizerController;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
+import com.aneeq.venuemanager.exception.AuthorizerNotFoundException;
 import com.aneeq.venuemanager.service.AuthorizerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,5 +54,29 @@ class AuthorizerControllerTests {
 
         assertEquals(HttpStatus.OK, authorizerResponseList.getStatusCode());
         assertEquals(authorizerResponses, authorizerResponseList.getBody());
+    }
+
+    @Test
+    void testViewAuthorizerById() throws AuthorizerNotFoundException {
+        AuthorizerResponse authorizerResponse = MockAuthorizerResponse.generateAuthorizerResponse();
+        when(authorizerService.getAuthorizerById(1)).thenReturn(authorizerResponse);
+        ResponseEntity<AuthorizerResponse> response = authorizerController.viewAuthorizerById(1);
+
+        assertEquals(authorizerResponse, response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void testViewAuthorizerById_AuthorizerNotFound() throws AuthorizerNotFoundException {
+        when(authorizerService.getAuthorizerById(anyInt())).thenThrow(AuthorizerNotFoundException.class);
+        ResponseEntity<AuthorizerResponse> response = authorizerController.viewAuthorizerById(1);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testViewAuthorizerById_CommonException() throws AuthorizerNotFoundException {
+        when(authorizerService.getAuthorizerById(anyInt())).thenThrow(NullPointerException.class);
+        ResponseEntity<AuthorizerResponse> response = authorizerController.viewAuthorizerById(1);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }

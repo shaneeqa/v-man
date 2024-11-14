@@ -30,4 +30,14 @@ class AuthorizerResponseMapperTests {
         assertEquals(authorizers.get(2).getId(), authorizerResponses.get(2).getId());
         assertEquals(authorizers.get(0).getDesignation(), authorizerResponses.get(0).getDesignation());
     }
+
+    @Test
+    void testAuthorizerToAuthorizerResponse(){
+        Authorizer authorizer = MockAuthorizer.generateAuthorizer();
+        AuthorizerResponse authorizerResponse = authorizerResponseMapper.authorizerToAuthorizerResponse(authorizer);
+
+        assertEquals(authorizer.getId(),authorizerResponse.getId());
+        assertEquals(authorizer.getName(),authorizerResponse.getName());
+        assertEquals(authorizer.getDesignation(),authorizerResponse.getDesignation());
+    }
 }

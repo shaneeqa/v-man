@@ -2,8 +2,10 @@ package com.aneeq.venuemanager.controller;
 
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
+import com.aneeq.venuemanager.exception.AuthorizerNotFoundException;
 import com.aneeq.venuemanager.service.AuthorizerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -45,8 +47,26 @@ public class AuthorizerController {
     }
     )
     @GetMapping
-    public ResponseEntity<List<AuthorizerResponse>> viewAllAuthorizers(){
+    public ResponseEntity<List<AuthorizerResponse>> viewAllAuthorizers() {
         authorizerService.getAllAuthorizers();
         return new ResponseEntity<>(authorizerService.getAllAuthorizers(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "View a authorizer through ID", description = "Find a venue using its unique ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the relevant authorizer for the given ID", content = @Content),
+            @ApiResponse(responseCode = "404", description = "authorizer not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<AuthorizerResponse> viewAuthorizerById(@Parameter(
+            description = "ID of the venue to be retrieved") @PathVariable Integer id) {
+        try {
+            return new ResponseEntity<>(authorizerService.getAuthorizerById(id), HttpStatus.OK);
+        } catch (AuthorizerNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

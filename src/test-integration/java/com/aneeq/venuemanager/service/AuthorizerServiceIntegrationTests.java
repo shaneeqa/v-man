@@ -5,6 +5,7 @@ import com.aneeq.venuemanager.MockAuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
 import com.aneeq.venuemanager.entity.Authorizer;
+import com.aneeq.venuemanager.exception.AuthorizerNotFoundException;
 import com.aneeq.venuemanager.repository.AuthorizerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class AuthorizerServiceIntegrationTests {
@@ -47,6 +49,15 @@ class AuthorizerServiceIntegrationTests {
 
         assertEquals(4, authorizerResponses.size());
         assertAuthorizerResponseList(authorizers, authorizerResponses);
+    }
+
+    @Test
+    void testGetAuthorizerById() throws AuthorizerNotFoundException {
+        Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
+        AuthorizerResponse authorizerResponse = authorizerService.getAuthorizerById(authorizer.getId());
+
+        assertNotNull(authorizerResponse);
+        assertAuthorizerResponseObject(authorizer, authorizerResponse);
     }
 
     private void assertAuthorizerResponseObject(Authorizer authorizer, AuthorizerResponse authorizerResponse) {

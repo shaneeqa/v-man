@@ -7,7 +7,9 @@ import com.aneeq.venuemanager.dto.mapper.response.AuthorizerResponseMapperImpl;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
 import com.aneeq.venuemanager.entity.Authorizer;
+import com.aneeq.venuemanager.exception.AuthorizerNotFoundException;
 import com.aneeq.venuemanager.repository.AuthorizerRepository;
+import com.aneeq.venuemanager.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,9 +17,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AuthorizerServiceTests {
@@ -60,6 +64,32 @@ class AuthorizerServiceTests {
         for(int i =0; i<allAuthorizers.size();i++){
             assertAuthorizerObject(allAuthorizers.get(i),authorizers.get(i));
         }
+    }
+
+    @Test
+    void testGetAllAuthorizers_isEmpty(){
+        when(authorizerRepository.findAll()).thenReturn(Collections.emptyList());
+        assertTrue(authorizerService.getAllAuthorizers().isEmpty());
+    }
+
+    @Test
+    void testGetAuthorizerById() throws AuthorizerNotFoundException {
+        Authorizer authorizer = MockAuthorizer.generateAuthorizer();
+        when(authorizerRepository.findById(2)).thenReturn(Optional.of(authorizer));
+
+        AuthorizerResponse authorizerResponse = authorizerService.getAuthorizerById(2);
+
+        verify(authorizerRepository, times(1)).findById(2);
+        verify(authorizerResponseMapper, times(1)).authorizerToAuthorizerResponse(authorizer);
+        assertNotNull(authorizerResponse);
+        assertAuthorizerObject(authorizerResponse, authorizer);
+    }
+
+    @Test
+    void testGetAuthorizerById_AuthorizerNotFound(){
+        when(authorizerRepository.findById(1)).thenReturn(Optional.empty());
+        AuthorizerNotFoundException authorizerNotFoundException = assertThrows(AuthorizerNotFoundException.class, () -> authorizerService.getAuthorizerById(1));
+        assertEquals(Util.AUTHORIZER_NOT_FOUND_EXCEPTION_MSG, authorizerNotFoundException.getMessage());
     }
 
     private void assertAuthorizerObject(AuthorizerResponse authorizerResponse, Authorizer authorizer){

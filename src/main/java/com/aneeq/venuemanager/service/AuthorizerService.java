@@ -5,11 +5,13 @@ import com.aneeq.venuemanager.dto.mapper.response.AuthorizerResponseMapper;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
 import com.aneeq.venuemanager.entity.Authorizer;
+import com.aneeq.venuemanager.exception.AuthorizerNotFoundException;
 import com.aneeq.venuemanager.repository.AuthorizerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorizerService {
@@ -39,5 +41,13 @@ public class AuthorizerService {
 
     public List<AuthorizerResponse> getAllAuthorizers() {
         return authorizerResponseMapper.authorizersToAuthorizerResponses(authorizerRepository.findAll());
+    }
+
+    public AuthorizerResponse getAuthorizerById(Integer id) throws AuthorizerNotFoundException {
+        Optional<Authorizer> authorizerById = authorizerRepository.findById(id);
+        if (authorizerById.isEmpty())
+            throw new AuthorizerNotFoundException();
+
+        return authorizerResponseMapper.authorizerToAuthorizerResponse(authorizerById.get());
     }
 }

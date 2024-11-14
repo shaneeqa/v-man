@@ -1,8 +1,10 @@
 package com.aneeq.venuemanager.contoller;
 
+import com.aneeq.venuemanager.MockAuthorizer;
 import com.aneeq.venuemanager.MockAuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
+import com.aneeq.venuemanager.entity.Authorizer;
 import com.aneeq.venuemanager.repository.AuthorizerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +35,12 @@ class AuthorizerControllerFunctionalTests {
     void testViewAllAuthorizers(){
         ResponseEntity<AuthorizerResponse[]> authorizerResponses = testRestTemplate.getForEntity("/authorizers", AuthorizerResponse[].class);
         assertEquals(HttpStatus.OK, authorizerResponses.getStatusCode());
+    }
+
+    @Test
+    void testViewAuthorizerById(){
+        Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
+        ResponseEntity<AuthorizerResponse> authorizerResponse = testRestTemplate.getForEntity("/authorizers/{id}", AuthorizerResponse.class,authorizer.getId());
+        assertEquals(HttpStatus.OK, authorizerResponse.getStatusCode());
     }
 }

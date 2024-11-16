@@ -96,18 +96,40 @@ class AuthorizerServiceTests {
     void testUpdateAuthorizerById() throws AuthorizerNotFoundException {
         Authorizer authorizer = MockAuthorizer.generateAuthorizer();
         when(authorizerRepository.findById(2)).thenReturn(Optional.of(authorizer));
-        authorizerService.updateAuthorizerById(2,MockAuthorizerRequest.generateAuthorizerRequest());
+        authorizerService.updateAuthorizerById(2, MockAuthorizerRequest.generateAuthorizerRequest());
 
-        verify(authorizerRepository,times(1)).save(authorizer);
+        verify(authorizerRepository, times(1)).save(authorizer);
     }
 
     @Test
-    void testUpdateAuthorizerById_AuthorizerNotFound(){
+    void testUpdateAuthorizerById_AuthorizerNotFound() {
         when(authorizerRepository.findById(2)).thenReturn(Optional.empty());
         AuthorizerNotFoundException authorizerNotFoundException = assertThrows(AuthorizerNotFoundException.class, () -> authorizerService.updateAuthorizerById(2, MockAuthorizerRequest.generateAuthorizerRequest()));
 
         verify(authorizerRepository, times(1)).findById(2);
         verify(authorizerRepository, never()).save(any());
+        assertEquals(Util.AUTHORIZER_NOT_FOUND_EXCEPTION_MSG, authorizerNotFoundException.getMessage());
+    }
+
+    @Test
+    void testDeleteAuthorizerById() throws AuthorizerNotFoundException {
+        Authorizer authorizer = new Authorizer();
+        when(authorizerRepository.findById(3)).thenReturn(Optional.of(authorizer));
+        doNothing().when(authorizerRepository).deleteById(3);
+
+        authorizerService.deleteAuthorizerById(3);
+
+        verify(authorizerRepository, times(1)).findById(3);
+        verify(authorizerRepository, times(1)).deleteById(3);
+    }
+
+    @Test
+    void testDeleteAuthorizerById_AuthorizerNotFound() {
+        when(authorizerRepository.findById(3)).thenReturn(Optional.empty());
+        AuthorizerNotFoundException authorizerNotFoundException = assertThrows(AuthorizerNotFoundException.class, () -> authorizerService.deleteAuthorizerById(3));
+
+        verify(authorizerRepository, times(1)).findById(3);
+        verify(authorizerRepository, never()).deleteById(3);
         assertEquals(Util.AUTHORIZER_NOT_FOUND_EXCEPTION_MSG, authorizerNotFoundException.getMessage());
     }
 

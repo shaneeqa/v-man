@@ -2,9 +2,12 @@ package com.aneeq.venuemanager.contoller;
 
 import com.aneeq.venuemanager.MockAuthorizer;
 import com.aneeq.venuemanager.MockAuthorizerRequest;
+import com.aneeq.venuemanager.MockVenue;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
+import com.aneeq.venuemanager.dto.model.response.VenueResponse;
 import com.aneeq.venuemanager.entity.Authorizer;
+import com.aneeq.venuemanager.entity.Venue;
 import com.aneeq.venuemanager.repository.AuthorizerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +37,20 @@ class AuthorizerControllerFunctionalTests {
     }
 
     @Test
-    void testViewAllAuthorizers(){
+    void testViewAllAuthorizers() {
         ResponseEntity<AuthorizerResponse[]> authorizerResponses = testRestTemplate.getForEntity("/authorizers", AuthorizerResponse[].class);
         assertEquals(HttpStatus.OK, authorizerResponses.getStatusCode());
     }
 
     @Test
-    void testViewAuthorizerById(){
+    void testViewAuthorizerById() {
         Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
-        ResponseEntity<AuthorizerResponse> authorizerResponse = testRestTemplate.getForEntity("/authorizers/{id}", AuthorizerResponse.class,authorizer.getId());
+        ResponseEntity<AuthorizerResponse> authorizerResponse = testRestTemplate.getForEntity("/authorizers/{id}", AuthorizerResponse.class, authorizer.getId());
         assertEquals(HttpStatus.OK, authorizerResponse.getStatusCode());
     }
 
     @Test
-    void testUpdateVenueById(){
+    void testUpdateVenueById() {
         Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
         ResponseEntity<AuthorizerResponse> response = testRestTemplate.exchange(
                 "/authorizers/{id}",
@@ -58,5 +61,18 @@ class AuthorizerControllerFunctionalTests {
         );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void testDeleteVenueById() {
+        Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
+        ResponseEntity<AuthorizerResponse> response = testRestTemplate.exchange(
+                "/authorizers/{id}",
+                HttpMethod.DELETE,
+                new HttpEntity<>(authorizer),
+                AuthorizerResponse.class,
+                authorizer.getId()
+        );
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 }

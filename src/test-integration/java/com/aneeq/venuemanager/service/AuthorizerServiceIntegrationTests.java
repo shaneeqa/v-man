@@ -15,8 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AuthorizerServiceIntegrationTests {
@@ -69,6 +68,13 @@ class AuthorizerServiceIntegrationTests {
 
         Optional<Authorizer> updatedAuthorizer = authorizerRepository.findById(authorizer.getId());
         assertAuthorizerRequestObject(updatedAuthorizer.get(), authorizerRequest);
+    }
+
+    @Test
+    void testDeleteAuthorizerById() throws AuthorizerNotFoundException {
+        Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
+        authorizerService.deleteAuthorizerById(authorizer.getId());
+        assertFalse(authorizerRepository.existsById(authorizer.getId()));
     }
 
     private void assertAuthorizerRequestObject(Authorizer authorizer, AuthorizerRequest authorizerRequest) {

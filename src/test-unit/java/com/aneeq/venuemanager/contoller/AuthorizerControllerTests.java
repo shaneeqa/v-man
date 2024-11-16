@@ -85,4 +85,11 @@ class AuthorizerControllerTests {
         verify(authorizerService, times(1)).updateAuthorizerById(anyInt(),any());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
+    @Test
+    void deleteAuthorizerById() throws AuthorizerNotFoundException {
+        ResponseEntity<AuthorizerResponse> response = authorizerController.deleteAuthorizerById(2);
+        verify(authorizerService, times(1)).deleteAuthorizerById(2);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
 }

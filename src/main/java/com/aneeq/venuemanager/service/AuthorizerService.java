@@ -60,4 +60,13 @@ public class AuthorizerService {
         authorizerRequestMapper.authorizerRequestToAuthorizer(authorizer.get(), authorizerRequest);
         authorizerRepository.save(authorizer.get());
     }
+
+    public void deleteAuthorizerById(Integer id) throws AuthorizerNotFoundException {
+        Optional<Authorizer> authorizer = authorizerRepository.findById(id);
+
+        if (authorizer.isEmpty())
+            throw new AuthorizerNotFoundException();
+
+        authorizerRepository.deleteById(id);
+    }
 }

@@ -60,7 +60,7 @@ public class AuthorizerController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<AuthorizerResponse> viewAuthorizerById(@Parameter(
-            description = "ID of the venue to be retrieved") @PathVariable Integer id) {
+            description = "ID of the authorizer to be retrieved") @PathVariable Integer id) {
         try {
             return new ResponseEntity<>(authorizerService.getAuthorizerById(id), HttpStatus.OK);
         } catch (AuthorizerNotFoundException e) {
@@ -76,8 +76,23 @@ public class AuthorizerController {
             @ApiResponse(responseCode = "404", description = "Authorizer not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<AuthorizerResponse> updateAuthorizerById(@PathVariable Integer id, @RequestBody AuthorizerRequest authorizerRequest) throws AuthorizerNotFoundException {
+    public ResponseEntity<AuthorizerResponse> updateAuthorizerById(@Parameter(
+            description = "ID of the authorizer to update")@PathVariable Integer id, @RequestBody AuthorizerRequest authorizerRequest) throws AuthorizerNotFoundException {
         authorizerService.updateAuthorizerById(id,authorizerRequest);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Update an authroizer through ID", description = "Update details of an existing authorizer")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorizer updated successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Authorizer not found", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<AuthorizerResponse> deleteAuthorizerById(@Parameter(
+            description = "ID of the authorizer to delete")@PathVariable Integer id)
+            throws AuthorizerNotFoundException {
+
+        authorizerService.deleteAuthorizerById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

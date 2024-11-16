@@ -50,4 +50,14 @@ public class AuthorizerService {
 
         return authorizerResponseMapper.authorizerToAuthorizerResponse(authorizerById.get());
     }
+
+    public void updateAuthorizerById(Integer id, AuthorizerRequest authorizerRequest) throws AuthorizerNotFoundException {
+        Optional<Authorizer> authorizer = authorizerRepository.findById(id);
+
+        if (authorizer.isEmpty())
+            throw new AuthorizerNotFoundException();
+
+        authorizerRequestMapper.authorizerRequestToAuthorizer(authorizer.get(), authorizerRequest);
+        authorizerRepository.save(authorizer.get());
+    }
 }

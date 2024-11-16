@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,6 +59,21 @@ class AuthorizerServiceIntegrationTests {
 
         assertNotNull(authorizerResponse);
         assertAuthorizerResponseObject(authorizer, authorizerResponse);
+    }
+
+    @Test
+    void testUpdateAuthorizerById() throws AuthorizerNotFoundException {
+        AuthorizerRequest authorizerRequest = MockAuthorizerRequest.generateAuthorizerRequest();
+        Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
+        authorizerService.updateAuthorizerById(authorizer.getId(), authorizerRequest);
+
+        Optional<Authorizer> updatedAuthorizer = authorizerRepository.findById(authorizer.getId());
+        assertAuthorizerRequestObject(updatedAuthorizer.get(), authorizerRequest);
+    }
+
+    private void assertAuthorizerRequestObject(Authorizer authorizer, AuthorizerRequest authorizerRequest) {
+        assertEquals(authorizer.getName(), authorizerRequest.getName());
+        assertEquals(authorizer.getDesignation(), authorizerRequest.getDesignation());
     }
 
     private void assertAuthorizerResponseObject(Authorizer authorizer, AuthorizerResponse authorizerResponse) {

@@ -1,5 +1,6 @@
 package com.aneeq.venuemanager.dto.mapper.request;
 
+import com.aneeq.venuemanager.MockAuthorizer;
 import com.aneeq.venuemanager.MockAuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.entity.Authorizer;
@@ -24,7 +25,20 @@ class AuthorizerRequestMapperTests {
     void testAuthorizerRequestToAuthorizer() {
         AuthorizerRequest authorizerRequest = MockAuthorizerRequest.generateAuthorizerRequest();
         Authorizer authorizer = authorizerRequestMapper.authorizerRequestToAuthorizer(authorizerRequest);
-        assertEquals(authorizer.getName(), authorizerRequest.getName());
-        assertEquals(authorizer.getDesignation(), authorizerRequest.getDesignation());
+        assertAuthorizerObject(authorizerRequest, authorizer);
+    }
+
+    @Test
+    void testAuthorizerRequestToAuthorizer_updateAuthorizer() {
+        AuthorizerRequest authorizerRequest = MockAuthorizerRequest.generateAuthorizerRequest();
+        Authorizer authorizer = MockAuthorizer.generateAuthorizer();
+        authorizerRequestMapper.authorizerRequestToAuthorizer(authorizer, authorizerRequest);
+
+        assertAuthorizerObject(authorizerRequest, authorizer);
+    }
+
+    private void assertAuthorizerObject(AuthorizerRequest authorizerRequest, Authorizer authorizer) {
+        assertEquals(authorizerRequest.getName(), authorizer.getName());
+        assertEquals(authorizerRequest.getDesignation(), authorizer.getDesignation());
     }
 }

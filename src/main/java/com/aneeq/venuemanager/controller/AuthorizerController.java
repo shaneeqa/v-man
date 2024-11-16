@@ -69,4 +69,15 @@ public class AuthorizerController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Operation(summary = "Update an authorizer through ID", description = "Update details of an existing authorizer")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorizer updated successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Authorizer not found", content = @Content)
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<AuthorizerResponse> updateAuthorizerById(@PathVariable Integer id, @RequestBody AuthorizerRequest authorizerRequest) throws AuthorizerNotFoundException {
+        authorizerService.updateAuthorizerById(id,authorizerRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

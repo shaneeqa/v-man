@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -42,5 +44,19 @@ class AuthorizerControllerFunctionalTests {
         Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
         ResponseEntity<AuthorizerResponse> authorizerResponse = testRestTemplate.getForEntity("/authorizers/{id}", AuthorizerResponse.class,authorizer.getId());
         assertEquals(HttpStatus.OK, authorizerResponse.getStatusCode());
+    }
+
+    @Test
+    void testUpdateVenueById(){
+        Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
+        ResponseEntity<AuthorizerResponse> response = testRestTemplate.exchange(
+                "/authorizers/{id}",
+                HttpMethod.PUT,
+                new HttpEntity<>(authorizer),
+                AuthorizerResponse.class,
+                authorizer.getId()
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

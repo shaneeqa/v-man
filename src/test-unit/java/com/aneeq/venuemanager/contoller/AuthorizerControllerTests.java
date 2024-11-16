@@ -20,8 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class AuthorizerControllerTests {
 
@@ -78,5 +77,12 @@ class AuthorizerControllerTests {
         when(authorizerService.getAuthorizerById(anyInt())).thenThrow(NullPointerException.class);
         ResponseEntity<AuthorizerResponse> response = authorizerController.viewAuthorizerById(1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    void testUpdateAuthorizerById() throws AuthorizerNotFoundException {
+        ResponseEntity<AuthorizerResponse> response = authorizerController.updateAuthorizerById(anyInt(),any());
+        verify(authorizerService, times(1)).updateAuthorizerById(anyInt(),any());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

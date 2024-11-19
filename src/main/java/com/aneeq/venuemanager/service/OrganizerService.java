@@ -55,10 +55,17 @@ public class OrganizerService {
     public void updateOrganizerById(Integer id, OrganizerRequest organizerRequest) throws OrganizerNotFoundException {
         Optional<Organizer> organizer = organizerRepository.findById(id);
 
-        if(organizer.isEmpty())
+        if (organizer.isEmpty())
             throw new OrganizerNotFoundException();
 
         organizerRequestMapper.organizerRequestToOrganizer(organizer.get(), organizerRequest);
         organizerRepository.save(organizer.get());
+    }
+
+    public void deleteOrganizerById(Integer id) throws OrganizerNotFoundException {
+        Optional<Organizer> organizer = organizerRepository.findById(id);
+        if (organizer.isEmpty())
+            throw new OrganizerNotFoundException();
+        organizerRepository.deleteById(id);
     }
 }

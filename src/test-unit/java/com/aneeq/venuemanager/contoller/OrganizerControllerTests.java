@@ -44,7 +44,7 @@ class OrganizerControllerTests {
     }
 
     @Test
-    void testViewAllOrganizers(){
+    void testViewAllOrganizers() {
         List<OrganizerResponse> organizerResponses = MockOrganizerResponse.generateOrganizerResponseList(5);
         when(organizerService.getAllOrganizers()).thenReturn(organizerResponses);
         ResponseEntity<List<OrganizerResponse>> organizerResponseList = organizerController.viewAllOrganizers();
@@ -59,7 +59,7 @@ class OrganizerControllerTests {
         when(organizerService.getOrganizerById(2)).thenReturn(organizerResponse);
         ResponseEntity<OrganizerResponse> response = organizerController.viewOrganizerById(2);
 
-        assertEquals(organizerResponse,response.getBody());
+        assertEquals(organizerResponse, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -82,5 +82,12 @@ class OrganizerControllerTests {
         ResponseEntity<OrganizerResponse> response = organizerController.updateOrganizerById(anyInt(), any());
         verify(organizerService, times(1)).updateOrganizerById(anyInt(), any());
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void testDeleteOrganizerById() throws OrganizerNotFoundException {
+        ResponseEntity<OrganizerResponse> response = organizerController.deleteOrganizerById(1);
+        verify(organizerService, times(1)).deleteOrganizerById(1);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 }

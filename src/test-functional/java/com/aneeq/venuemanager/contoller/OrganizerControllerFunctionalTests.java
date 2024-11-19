@@ -1,9 +1,12 @@
 package com.aneeq.venuemanager.contoller;
 
+import com.aneeq.venuemanager.MockAuthorizer;
 import com.aneeq.venuemanager.MockOrganizer;
 import com.aneeq.venuemanager.MockOrganizerRequest;
 import com.aneeq.venuemanager.dto.model.request.OrganizerRequest;
+import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
 import com.aneeq.venuemanager.dto.model.response.OrganizerResponse;
+import com.aneeq.venuemanager.entity.Authorizer;
 import com.aneeq.venuemanager.entity.Organizer;
 import com.aneeq.venuemanager.repository.OrganizerRepository;
 import org.junit.jupiter.api.Test;
@@ -61,4 +64,16 @@ class OrganizerControllerFunctionalTests {
 
     }
 
+    @Test
+    void testDeleteOrganizerById() {
+        Organizer organizer = organizerRepository.save(MockOrganizer.generateOrganizer());
+        ResponseEntity<OrganizerResponse> response = testRestTemplate.exchange(
+                "/organizers/{id}",
+                HttpMethod.DELETE,
+                new HttpEntity<>(organizer),
+                OrganizerResponse.class,
+                organizer.getId()
+        );
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
 }

@@ -82,4 +82,17 @@ public class OrganizerController {
         organizerService.updateOrganizerById(id, organizerRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Operation(summary = "Delete an organizer through ID", description = "Delete an organizer by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Organizer got deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Organizer not found", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<OrganizerResponse> deleteOrganizerById(
+            @Parameter(description = "ID of the venue to delete") @PathVariable Integer id)
+            throws OrganizerNotFoundException {
+        organizerService.deleteOrganizerById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

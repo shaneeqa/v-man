@@ -111,8 +111,32 @@ class OrganizerServiceTests {
         assertEquals(Util.ORGANIZER_NOT_FOUND_EXCEPTION_MSG, organizerNotFoundException.getMessage());
     }
 
+    @Test
+    void testDeleteOrganizerById() throws OrganizerNotFoundException {
+        Organizer organizer = new Organizer();
+        when(organizerRepository.findById(6)).thenReturn(Optional.of(organizer));
+        doNothing().when(organizerRepository).deleteById(6);
+
+        organizerService.deleteOrganizerById(6);
+
+        verify(organizerRepository, times(1)).findById(6);
+        verify(organizerRepository, times(1)).deleteById(6);
+    }
+
+    @Test
+    void testDeleteOrganizerById_OrganizerNotFound() {
+        when(organizerRepository.findById(2)).thenReturn(Optional.empty());
+        OrganizerNotFoundException organizerNotFoundException = assertThrows(OrganizerNotFoundException.class,
+                () -> organizerService.deleteOrganizerById(2));
+
+        verify(organizerRepository, times(1)).findById(2);
+        verify(organizerRepository, never()).deleteById(2);
+        assertEquals(Util.ORGANIZER_NOT_FOUND_EXCEPTION_MSG, organizerNotFoundException.getMessage());
+    }
+
     private void assertOrganizerObject(OrganizerResponse organizerResponse, Organizer organizer) {
         assertEquals(organizerResponse.getId(), organizer.getId());
         assertEquals(organizerResponse.getName(), organizer.getName());
     }
+
 }

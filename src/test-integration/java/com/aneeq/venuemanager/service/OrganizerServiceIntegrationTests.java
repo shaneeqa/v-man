@@ -17,8 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class OrganizerServiceIntegrationTests {
@@ -74,5 +73,12 @@ class OrganizerServiceIntegrationTests {
         Optional<Organizer> updatedOrganizer = organizerRepository.findById(organizer.getId());
 
         assertEquals(updatedOrganizer.get().getName(), organizerRequest.getName());
+    }
+
+    @Test
+    void testDeleteOrganizerById() throws OrganizerNotFoundException {
+        Organizer organizer = organizerRepository.save(MockOrganizer.generateOrganizer());
+        organizerService.deleteOrganizerById(organizer.getId());
+        assertFalse(organizerRepository.existsById(organizer.getId()));
     }
 }

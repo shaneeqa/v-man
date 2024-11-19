@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class OrganizerResponse {
+    private Integer id;
     private String name;
 }

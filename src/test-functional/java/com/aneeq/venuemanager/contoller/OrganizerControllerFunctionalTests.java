@@ -2,6 +2,8 @@ package com.aneeq.venuemanager.contoller;
 
 import com.aneeq.venuemanager.MockOrganizerRequest;
 import com.aneeq.venuemanager.dto.model.request.OrganizerRequest;
+import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
+import com.aneeq.venuemanager.dto.model.response.OrganizerResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,5 +23,11 @@ class OrganizerControllerFunctionalTests {
         OrganizerRequest organizerRequest = MockOrganizerRequest.generateOrganizerRequest();
         ResponseEntity<Void> response = testRestTemplate.postForEntity("/organizers", organizerRequest, Void.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    void testViewAllOrganizers() {
+        ResponseEntity<OrganizerResponse[]> organizerResponses = testRestTemplate.getForEntity("/organizers", OrganizerResponse[].class);
+        assertEquals(HttpStatus.OK, organizerResponses.getStatusCode());
     }
 }

@@ -19,8 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class OrganizerControllerTests {
 
@@ -76,5 +75,12 @@ class OrganizerControllerTests {
         when(organizerService.getOrganizerById(anyInt())).thenThrow(NullPointerException.class);
         ResponseEntity<OrganizerResponse> response = organizerController.viewOrganizerById(1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    void testUpdateOrganizerById() throws OrganizerNotFoundException {
+        ResponseEntity<OrganizerResponse> response = organizerController.updateOrganizerById(anyInt(), any());
+        verify(organizerService, times(1)).updateOrganizerById(anyInt(), any());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

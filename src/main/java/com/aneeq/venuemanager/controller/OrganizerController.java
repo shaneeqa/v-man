@@ -35,7 +35,7 @@ public class OrganizerController {
             @ApiResponse(responseCode = "400", description = "Invalid Request", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<OrganizerResponse> createOrganizer(OrganizerRequest organizerRequest){
+    public ResponseEntity<OrganizerResponse> createOrganizer(OrganizerRequest organizerRequest) {
         organizerService.saveOrganizer(organizerRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -47,9 +47,9 @@ public class OrganizerController {
     }
     )
     @GetMapping
-    public ResponseEntity<List<OrganizerResponse>> viewAllOrganizers(){
+    public ResponseEntity<List<OrganizerResponse>> viewAllOrganizers() {
         organizerService.getAllOrganizers();
-        return new ResponseEntity<>(organizerService.getAllOrganizers(),HttpStatus.OK);
+        return new ResponseEntity<>(organizerService.getAllOrganizers(), HttpStatus.OK);
     }
 
     @Operation(summary = "View a organizer through ID", description = "Find an organizer using its unique ID")
@@ -60,13 +60,26 @@ public class OrganizerController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<OrganizerResponse> viewOrganizerById(@Parameter(
-            description = "ID of the organizer to be retrieved") @PathVariable Integer id){
-        try{
+            description = "ID of the organizer to be retrieved") @PathVariable Integer id) {
+        try {
             return new ResponseEntity<>(organizerService.getOrganizerById(id), HttpStatus.OK);
         } catch (OrganizerNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Operation(summary = "Update an organizer through ID", description = "Update details of an existing organizer")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Organizer updated successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Organizer not found", content = @Content)
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<OrganizerResponse> updateOrganizerById(@Parameter(
+            description = "ID of the authorizer to update") @PathVariable Integer id, @RequestBody OrganizerRequest organizerRequest)
+            throws OrganizerNotFoundException {
+        organizerService.updateOrganizerById(id, organizerRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

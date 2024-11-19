@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -43,14 +44,14 @@ class OrganizerServiceIntegrationTests {
     }
 
     @Test
-    void testGetAllOrganizers(){
+    void testGetAllOrganizers() {
         List<Organizer> organizers = MockOrganizer.generateOrganizerList(4);
         organizerRepository.saveAll(organizers);
         List<OrganizerResponse> organizerResponses = organizerService.getAllOrganizers();
 
-        assertEquals(4,organizerResponses.size());
+        assertEquals(4, organizerResponses.size());
 
-        for(int i =0; i<organizers.size();i++){
+        for (int i = 0; i < organizers.size(); i++) {
             assertEquals(organizers.get(i).getName(), organizerResponses.get(i).getName());
         }
     }
@@ -62,5 +63,16 @@ class OrganizerServiceIntegrationTests {
 
         assertNotNull(organizerResponse);
         assertEquals(organizer.getName(), organizerResponse.getName());
+    }
+
+    @Test
+    void testUpdateOrganizerById() throws OrganizerNotFoundException {
+        OrganizerRequest organizerRequest = MockOrganizerRequest.generateOrganizerRequest();
+        Organizer organizer = organizerRepository.save(MockOrganizer.generateOrganizer());
+        organizerService.updateOrganizerById(organizer.getId(), organizerRequest);
+
+        Optional<Organizer> updatedOrganizer = organizerRepository.findById(organizer.getId());
+
+        assertEquals(updatedOrganizer.get().getName(), organizerRequest.getName());
     }
 }

@@ -77,12 +77,13 @@ public class AuthorizerController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<AuthorizerResponse> updateAuthorizerById(@Parameter(
-            description = "ID of the authorizer to update")@PathVariable Integer id, @RequestBody AuthorizerRequest authorizerRequest) throws AuthorizerNotFoundException {
+            description = "ID of the authorizer to update")@PathVariable Integer id, @RequestBody AuthorizerRequest authorizerRequest)
+            throws AuthorizerNotFoundException {
         authorizerService.updateAuthorizerById(id,authorizerRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "Update an authroizer through ID", description = "Update details of an existing authorizer")
+    @Operation(summary = "Update an authorizer through ID", description = "Update details of an existing authorizer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Authorizer updated successfully", content = @Content),
             @ApiResponse(responseCode = "404", description = "Authorizer not found", content = @Content)
@@ -95,4 +96,5 @@ public class AuthorizerController {
         authorizerService.deleteAuthorizerById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }

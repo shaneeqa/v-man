@@ -85,9 +85,29 @@ class OrganizerServiceTests {
     }
 
     @Test
-    void testGetOrganizerById_OrganizerNotFound(){
+    void testGetOrganizerById_OrganizerNotFound() {
         when(organizerRepository.findById(3)).thenReturn(Optional.empty());
         OrganizerNotFoundException organizerNotFoundException = assertThrows(OrganizerNotFoundException.class, () -> organizerService.getOrganizerById(3));
+        assertEquals(Util.ORGANIZER_NOT_FOUND_EXCEPTION_MSG, organizerNotFoundException.getMessage());
+    }
+
+    @Test
+    void testUpdateOrganizerById() throws OrganizerNotFoundException {
+        Organizer organizer = MockOrganizer.generateOrganizer();
+        when(organizerRepository.findById(5)).thenReturn(Optional.of(organizer));
+        organizerService.updateOrganizerById(5, MockOrganizerRequest.generateOrganizerRequest());
+
+        verify(organizerRepository, times(1)).save(organizer);
+    }
+
+    @Test
+    void testUpdateOrganizerById_OrganizerNotFound() {
+        when(organizerRepository.findById(2)).thenReturn(Optional.empty());
+        OrganizerNotFoundException organizerNotFoundException = assertThrows(OrganizerNotFoundException.class,
+                () -> organizerService.updateOrganizerById(5, MockOrganizerRequest.generateOrganizerRequest()));
+
+        verify(organizerRepository, times(1)).findById(2);
+        verify(organizerRepository, never()).save(any());
         assertEquals(Util.ORGANIZER_NOT_FOUND_EXCEPTION_MSG, organizerNotFoundException.getMessage());
     }
 

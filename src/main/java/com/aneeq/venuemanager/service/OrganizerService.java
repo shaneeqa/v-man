@@ -51,4 +51,14 @@ public class OrganizerService {
 
         return organizerResponseMapper.organizerToOrganizerResponse(organizer.get());
     }
+
+    public void updateOrganizerById(Integer id, OrganizerRequest organizerRequest) throws OrganizerNotFoundException {
+        Optional<Organizer> organizer = organizerRepository.findById(id);
+
+        if(organizer.isEmpty())
+            throw new OrganizerNotFoundException();
+
+        organizerRequestMapper.organizerRequestToOrganizer(organizer.get(), organizerRequest);
+        organizerRepository.save(organizer.get());
+    }
 }

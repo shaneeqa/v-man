@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -39,9 +41,24 @@ class OrganizerControllerFunctionalTests {
 
     @Test
     void testViewOrganizerById() {
-
         Organizer organizer = organizerRepository.save(MockOrganizer.generateOrganizer());
         ResponseEntity<OrganizerResponse> organizerResponse = testRestTemplate.getForEntity("/organizers/{id}", OrganizerResponse.class, organizer.getId());
         assertEquals(HttpStatus.OK, organizerResponse.getStatusCode());
     }
+
+    @Test
+    void testUpdateOrganizerById() {
+        Organizer organizer = organizerRepository.save(MockOrganizer.generateOrganizer());
+        ResponseEntity<OrganizerResponse> response = testRestTemplate.exchange(
+                "/organizers/{id}",
+                HttpMethod.PUT,
+                new HttpEntity<>(organizer),
+                OrganizerResponse.class,
+                organizer.getId()
+        );
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    }
+
 }

@@ -47,7 +47,7 @@ class AuthorizerControllerFunctionalTests {
     }
 
     @Test
-    void testUpdateVenueById() {
+    void testUpdateAuthorizerById() {
         Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
         ResponseEntity<AuthorizerResponse> response = testRestTemplate.exchange(
                 "/authorizers/{id}",
@@ -61,7 +61,7 @@ class AuthorizerControllerFunctionalTests {
     }
 
     @Test
-    void testDeleteVenueById() {
+    void testDeleteAuthorizerById() {
         Authorizer authorizer = authorizerRepository.save(MockAuthorizer.generateAuthorizer());
         ResponseEntity<AuthorizerResponse> response = testRestTemplate.exchange(
                 "/authorizers/{id}",

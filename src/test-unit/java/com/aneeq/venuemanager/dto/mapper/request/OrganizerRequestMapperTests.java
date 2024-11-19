@@ -1,5 +1,6 @@
 package com.aneeq.venuemanager.dto.mapper.request;
 
+import com.aneeq.venuemanager.MockOrganizer;
 import com.aneeq.venuemanager.MockOrganizerRequest;
 import com.aneeq.venuemanager.dto.model.request.OrganizerRequest;
 import com.aneeq.venuemanager.entity.Organizer;
@@ -16,14 +17,23 @@ class OrganizerRequestMapperTests {
     OrganizerRequestMapperImpl organizerRequestMapper;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testOrganizerRequestToOrganizer(){
+    void testOrganizerRequestToOrganizer() {
         OrganizerRequest organizerRequest = MockOrganizerRequest.generateOrganizerRequest();
         Organizer organizer = organizerRequestMapper.organizerRequestToOrganizer(organizerRequest);
+        assertEquals(organizerRequest.getName(), organizer.getName());
+    }
+
+    @Test
+    void testOrganizerRequestToOrganizer_updateOrganizer() {
+        Organizer organizer = MockOrganizer.generateOrganizer();
+        OrganizerRequest organizerRequest = MockOrganizerRequest.generateOrganizerRequest();
+        organizerRequestMapper.organizerRequestToOrganizer(organizer, organizerRequest);
+
         assertEquals(organizerRequest.getName(), organizer.getName());
     }
 }

@@ -7,7 +7,9 @@ import com.aneeq.venuemanager.dto.mapper.response.OrganizerResponseMapperImpl;
 import com.aneeq.venuemanager.dto.model.request.OrganizerRequest;
 import com.aneeq.venuemanager.dto.model.response.OrganizerResponse;
 import com.aneeq.venuemanager.entity.Organizer;
+import com.aneeq.venuemanager.exception.OrganizerNotFoundException;
 import com.aneeq.venuemanager.repository.OrganizerRepository;
+import com.aneeq.venuemanager.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,9 +19,9 @@ import org.mockito.Spy;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class OrganizerServiceTests {
@@ -58,15 +60,35 @@ class OrganizerServiceTests {
         verify(organizerRepository, times(1)).findAll();
         assertEquals(3, allOrganizers.size());
 
-        for(int i=0;i<allOrganizers.size(); i++){
+        for (int i = 0; i < allOrganizers.size(); i++) {
             assertOrganizerObject(allOrganizers.get(i), organizers.get(i));
         }
     }
 
     @Test
-    void testGetAllOrganizers_isEmpty(){
+    void testGetAllOrganizers_isEmpty() {
         when(organizerRepository.findAll()).thenReturn(Collections.emptyList());
         assertTrue(organizerService.getAllOrganizers().isEmpty());
+    }
+
+    @Test
+    void testGetOrganizerById() throws OrganizerNotFoundException {
+        Organizer organizer = MockOrganizer.generateOrganizer();
+        when(organizerRepository.findById(2)).thenReturn(Optional.of(organizer));
+
+        OrganizerResponse organizerResponse = organizerService.getOrganizerById(2);
+
+        verify(organizerRepository, times(1)).findById(2);
+        verify(organizerResponseMapper, times(1)).organizerToOrganizerResponse(organizer);
+        assertNotNull(organizerResponse);
+        assertOrganizerObject(organizerResponse, organizer);
+    }
+
+    @Test
+    void testGetOrganizerById_OrganizerNotFound(){
+        when(organizerRepository.findById(3)).thenReturn(Optional.empty());
+        OrganizerNotFoundException organizerNotFoundException = assertThrows(OrganizerNotFoundException.class, () -> organizerService.getOrganizerById(3));
+        assertEquals(Util.ORGANIZER_NOT_FOUND_EXCEPTION_MSG, organizerNotFoundException.getMessage());
     }
 
     private void assertOrganizerObject(OrganizerResponse organizerResponse, Organizer organizer) {

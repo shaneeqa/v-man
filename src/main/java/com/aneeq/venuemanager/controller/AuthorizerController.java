@@ -52,10 +52,10 @@ public class AuthorizerController {
         return new ResponseEntity<>(authorizerService.getAllAuthorizers(), HttpStatus.OK);
     }
 
-    @Operation(summary = "View a authorizer through ID", description = "Find a venue using its unique ID")
+    @Operation(summary = "View a authorizer through ID", description = "Find an authorizer using its unique ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the relevant authorizer for the given ID", content = @Content),
-            @ApiResponse(responseCode = "404", description = "authorizer not found", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Authorizer not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     @GetMapping("/{id}")

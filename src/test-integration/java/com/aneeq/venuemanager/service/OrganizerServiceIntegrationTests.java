@@ -5,6 +5,7 @@ import com.aneeq.venuemanager.MockOrganizerRequest;
 import com.aneeq.venuemanager.dto.model.request.OrganizerRequest;
 import com.aneeq.venuemanager.dto.model.response.OrganizerResponse;
 import com.aneeq.venuemanager.entity.Organizer;
+import com.aneeq.venuemanager.exception.OrganizerNotFoundException;
 import com.aneeq.venuemanager.repository.OrganizerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 class OrganizerServiceIntegrationTests {
@@ -53,4 +55,12 @@ class OrganizerServiceIntegrationTests {
         }
     }
 
+    @Test
+    void testGetOrganizerById() throws OrganizerNotFoundException {
+        Organizer organizer = organizerRepository.save(MockOrganizer.generateOrganizer());
+        OrganizerResponse organizerResponse = organizerService.getOrganizerById(organizer.getId());
+
+        assertNotNull(organizerResponse);
+        assertEquals(organizer.getName(), organizerResponse.getName());
+    }
 }

@@ -1,9 +1,11 @@
 package com.aneeq.venuemanager.contoller;
 
+import com.aneeq.venuemanager.MockOrganizer;
 import com.aneeq.venuemanager.MockOrganizerRequest;
 import com.aneeq.venuemanager.dto.model.request.OrganizerRequest;
-import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
 import com.aneeq.venuemanager.dto.model.response.OrganizerResponse;
+import com.aneeq.venuemanager.entity.Organizer;
+import com.aneeq.venuemanager.repository.OrganizerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OrganizerControllerFunctionalTests {
+
+    @Autowired
+    OrganizerRepository organizerRepository;
+
     @Autowired
     TestRestTemplate testRestTemplate;
 
@@ -29,5 +35,13 @@ class OrganizerControllerFunctionalTests {
     void testViewAllOrganizers() {
         ResponseEntity<OrganizerResponse[]> organizerResponses = testRestTemplate.getForEntity("/organizers", OrganizerResponse[].class);
         assertEquals(HttpStatus.OK, organizerResponses.getStatusCode());
+    }
+
+    @Test
+    void testViewOrganizerById() {
+
+        Organizer organizer = organizerRepository.save(MockOrganizer.generateOrganizer());
+        ResponseEntity<OrganizerResponse> organizerResponse = testRestTemplate.getForEntity("/organizers/{id}", OrganizerResponse.class, organizer.getId());
+        assertEquals(HttpStatus.OK, organizerResponse.getStatusCode());
     }
 }

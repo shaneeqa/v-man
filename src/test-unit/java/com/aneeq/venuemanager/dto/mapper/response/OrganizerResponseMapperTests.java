@@ -31,4 +31,12 @@ class OrganizerResponseMapperTests {
         assertEquals(organizers.get(0).getName(), organizerResponses.get(0).getName());
     }
 
+    @Test
+    void testOrganizerToOrganizerResponse() {
+        Organizer organizer = MockOrganizer.generateOrganizer();
+        OrganizerResponse organizerResponse = organizerResponseMapper.organizerToOrganizerResponse(organizer);
+
+        assertEquals(organizer.getId(), organizerResponse.getId());
+        assertEquals(organizer.getName(), organizerResponse.getName());
+    }
 }

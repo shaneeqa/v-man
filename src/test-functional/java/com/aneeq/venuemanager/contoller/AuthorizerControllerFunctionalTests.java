@@ -2,12 +2,9 @@ package com.aneeq.venuemanager.contoller;
 
 import com.aneeq.venuemanager.MockAuthorizer;
 import com.aneeq.venuemanager.MockAuthorizerRequest;
-import com.aneeq.venuemanager.MockVenue;
 import com.aneeq.venuemanager.dto.model.request.AuthorizerRequest;
 import com.aneeq.venuemanager.dto.model.response.AuthorizerResponse;
-import com.aneeq.venuemanager.dto.model.response.VenueResponse;
 import com.aneeq.venuemanager.entity.Authorizer;
-import com.aneeq.venuemanager.entity.Venue;
 import com.aneeq.venuemanager.repository.AuthorizerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
